@@ -11,8 +11,15 @@ class NavigationBar extends StatelessWidget {
          mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           SizedBox(height: 80, width: 150, child: Image.asset('assets/logo.png')),
+          Text(
+            'Welcome to TIOLI\n', 
+            style: TextStyle(fontWeight: FontWeight.w600, height: 0.9, fontSize: 30)
+            ),
+            Text(
+            '\nTake It Or Leave It\n', 
+            style: TextStyle(fontWeight: FontWeight.w300, height: 0.9, fontSize: 30)
+            ),
           Row(
-           
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _NavBarItem('Home'),

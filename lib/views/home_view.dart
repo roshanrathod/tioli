@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tioli/views/action_view/action_view.dart';
-import 'package:tioli/views/main_view/main_view.dart';
+import 'package:tioli/views/login_action_view.dart';
 import 'package:tioli/widgets/centered_view/centered_view.dart';
 import 'package:tioli/widgets/navigation/navigation_bar.dart';
 
@@ -19,8 +18,7 @@ class HomeView extends StatelessWidget {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  MainView(),
-                  Expanded(child: Center(child: ActionView('Show me what you got!'),),)
+                  Expanded(child: Center(child: LoginActionView(),),)
                 ],
               ),
             )
