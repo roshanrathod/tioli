@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tioli/views/home_view.dart';
 import 'package:firebase/firebase.dart' as firebase;
+import 'router.dart' as router;
 
 void main() => runApp(MyApp());
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     firebase.initializeApp(
-      apiKey: "AIzaSyDPrjwS1PyZ5RI-_36GH1WitD9ZENAJrDQ",
+    apiKey: "AIzaSyDPrjwS1PyZ5RI-_36GH1WitD9ZENAJrDQ",
     authDomain: "tioli-c7b5e.firebaseapp.com",
     databaseURL: "https://tioli-c7b5e.firebaseio.com",
     projectId: "tioli-c7b5e",
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Open Sans'
         )
       ),
-      home: HomeView(),
+      onGenerateRoute: router.generateRoute,
+      initialRoute: '/',
     ); 
   }
 }
