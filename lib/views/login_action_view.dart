@@ -1,18 +1,28 @@
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:tioli/widgets/inputWidget.dart';
 import 'package:tioli/services/firebase_auth.dart';
+import 'package:tioli/router.dart' as router;
 
-class LoginActionView extends StatelessWidget {
-  //final String title;
-  LoginActionView({firebaseAuth:FirebaseAuthService});
-  
+class LoginActionView extends StatefulWidget {
+  final String title;
+
+  LoginActionView({Key key, this.title}) : super(key: key);
+  @override
+  _LoginActionViewState createState() => new _LoginActionViewState();
+}
+
+class _LoginActionViewState extends State<LoginActionView> {
   final firebaseAuth = new FirebaseAuthService();
-
-  void tryToLogin() {
-    try {
-      firebaseAuth.createNewUser("anjanapai2508@gmail.com", "password123");
+  void tryToLogin() async {
+   try {
+      Future<User> firebaseUser = firebaseAuth.createNewUser("firstname", "lastname","anjanapai2508@gmail.com", "password123");
+      setState(() {
+       Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
+            arguments: firebaseUser);
+      });
     } catch (e) {
-      print("Error while trying to create user : $e");
+      print('Unable to login for error : $e');
     }
   }
 
@@ -91,8 +101,6 @@ class LoginActionView extends StatelessWidget {
                 padding: const EdgeInsets.all(10.0),
                 child:
                     const Text('Login Button', style: TextStyle(fontSize: 20))))
-        //customRectButton("Lets get Started", signInGradients, false),
-        //customRectButton("Create an Account", signUpGradients, false),
       ],
     );
   }
@@ -124,7 +132,6 @@ Widget customRectButton(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w500)),
-              //padding: EdgeInsets.only(top: 16),
             ),
             Visibility(
                 visible: isEndIconVisible,
