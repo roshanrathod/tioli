@@ -10,24 +10,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    firebase.initializeApp(
-    apiKey: "AIzaSyDPrjwS1PyZ5RI-_36GH1WitD9ZENAJrDQ",
-    authDomain: "tioli-c7b5e.firebaseapp.com",
-    databaseURL: "https://tioli-c7b5e.firebaseio.com",
-    projectId: "tioli-c7b5e",
-    storageBucket: "tioli-c7b5e.appspot.com",
-    messagingSenderId: "624629575687"
-    );
+    //if (firebase.apps == null) {
+      firebase.initializeApp(
+          apiKey: "AIzaSyDPrjwS1PyZ5RI-_36GH1WitD9ZENAJrDQ",
+          authDomain: "tioli-c7b5e.firebaseapp.com",
+          databaseURL: "https://tioli-c7b5e.firebaseio.com",
+          projectId: "tioli-c7b5e",
+          storageBucket: "tioli-c7b5e.appspot.com",
+          messagingSenderId: "624629575687");
+    //}
+
     return MaterialApp(
       title: 'Take it or Leave it',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: Theme.of(context).textTheme.apply(
-          fontFamily: 'Open Sans'
-        )
-      ),
+          primarySwatch: Colors.blue,
+          textTheme:
+              Theme.of(context).textTheme.apply(fontFamily: 'Open Sans')),
       onGenerateRoute: router.generateRoute,
       initialRoute: '/',
-    ); 
+    );
   }
 }

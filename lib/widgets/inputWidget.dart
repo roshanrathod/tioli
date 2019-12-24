@@ -9,7 +9,7 @@ class InputWidget extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Padding (
-      padding:  EdgeInsets.only(right:  20, bottom: 80),
+      padding:  EdgeInsets.only(right:  20, bottom: 30),
       child: Container (
       width: MediaQuery.of(context).size.width -40,
       child:  Material(

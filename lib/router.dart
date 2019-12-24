@@ -20,7 +20,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(builder: (context) {
         return ChangeNotifierProvider<FirebaseAuthService>(
           child: LoginActionView(),
-          builder: (BuildContext context) {
+          create: (BuildContext context) {
             return FirebaseAuthService();
           },
         );
@@ -33,7 +33,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           child: ProductsView(
               username: routeSettings.arguments,
           ),
-          builder: (BuildContext context) {
+          create: (BuildContext context) {
             return FirebaseAuthService();
           },
         );

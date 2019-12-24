@@ -1,4 +1,4 @@
-import 'package:firebase/firebase.dart';
+import 'package:firebase/src/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tioli/widgets/inputWidget.dart';
 import 'package:tioli/services/firebase_auth.dart';
@@ -16,11 +16,20 @@ class _LoginActionViewState extends State<LoginActionView> {
   final firebaseAuth = new FirebaseAuthService();
   void tryToLogin() async {
    try {
-      Future<User> firebaseUser = firebaseAuth.createNewUser("firstname", "lastname","anjanapai2508@gmail.com", "password123");
-      setState(() {
+     firebaseAuth.createNewUser("firstname", "lastname","anjanapai2508@gmail.com", "password123").then((value) {
+        setState(() {
        Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
-            arguments: firebaseUser);
+            arguments: value);
       });
+      print("value returned after login : $value");
+     });
+     
+
+      // firebaseAuth.createNewUser("firtname", "lastName", "email", "password").then((onValue) {
+
+
+      // });
+      
     } catch (e) {
       print('Unable to login for error : $e');
     }
@@ -46,14 +55,14 @@ class _LoginActionViewState extends State<LoginActionView> {
             Stack(
               alignment: Alignment.center,
               children: <Widget>[
-                InputWidget(20.0, 0.0),
+                InputWidget(10.0, 0.0),
                 Padding(
                   padding: EdgeInsets.only(right: 20),
                   child: Row(
                     children: <Widget>[
                       Expanded(
                           child: Padding(
-                        padding: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(top: 50),
                         child: Text(
                           'Enter your email id to continue ...',
                           textAlign: TextAlign.end,
@@ -61,19 +70,44 @@ class _LoginActionViewState extends State<LoginActionView> {
                               TextStyle(color: Color(0xFFA0A0A0), fontSize: 12),
                         ),
                       )),
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: ShapeDecoration(
-                            shape: CircleBorder(),
-                            gradient: LinearGradient(
-                                colors: signInGradients,
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight)),
-                        child: ImageIcon(
-                          AssetImage("assets/logo.png"),
-                          size: 40,
+                    ],
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 2),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 10, bottom: 0),
+              child: Text(
+                'Password',
+                style: TextStyle(fontSize: 16, color: Color(0xFF999A9A)),
+              ),
+            ),
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                InputWidget(1.0, 0.0),
+                Padding(
+                  padding: EdgeInsets.only(right: 20),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                          child: Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Text(
+                          'Enter your password to continue ...',
+                          textAlign: TextAlign.end,
+                          style:
+                              TextStyle(color: Color(0xFFA0A0A0), fontSize: 12),
                         ),
-                      )
+                      )),
                     ],
                   ),
                 )

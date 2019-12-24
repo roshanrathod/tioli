@@ -1,5 +1,6 @@
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firebase.dart';
+import 'package:firebase/firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class BaseAuthService with ChangeNotifier {
@@ -27,6 +28,7 @@ class FirebaseAuthService extends BaseAuthService {
       var info = fb.UserProfile();
       info.displayName = '$firstName $lastName';
       await auth.user.updateProfile(info);
+      updateUser(auth.user);
       return auth.user;
     } catch (e) {
       print('Error in sign in with credentials: $e');
@@ -63,8 +65,24 @@ class FirebaseAuthService extends BaseAuthService {
   }
 
   @override
-  Future<User> updateUser(User user) {
- 
-    return null;
+  Future<User> updateUser(User user) async {
+   final CollectionReference ref = fb.firestore().collection('users');
+   String displayName = user.displayName;
+   //String photoUrl = user.photoURL;
+
+   if (displayName == null) {
+     displayName = "No Name yet";
+   }
+   var newData = {
+     'uid': user.uid,
+     'displayName': displayName,
+     //'photoUrl': photoUrl,
+     'email': user.email,
+     'lastActive': DateTime.now()
+   };
+
+   await ref.doc(user.uid).set(newData, SetOptions(merge: true));
+
+   return user;
   }
 }
