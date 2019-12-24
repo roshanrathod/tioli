@@ -20,6 +20,9 @@ dependencies:
   flutter:
     sdk: flutter
   firebase: ^5.0.0
+  service_worker: ^0.2.0
+  googleapis_auth: ^0.2.3+5
+  provider: any
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -30,7 +33,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
+#dependency_overrides:
+  # provider:
+  #   git:
+  #     url: https://github.com/kevmoo/provider
+  #     ref: flutter_web
+      
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
