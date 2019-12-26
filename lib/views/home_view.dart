@@ -18,7 +18,9 @@ class HomeView extends StatelessWidget {
             Expanded(
               child: Row(
                 children: <Widget>[
-                    Expanded(child: Center(child: LoginActionView(title: 'LOGIN PAGE',),),)
+                    Expanded(child: Center(child: LoginActionView(title: 'LOGIN PAGE',),
+                    ),
+                    )
                    
                 ],
               ),

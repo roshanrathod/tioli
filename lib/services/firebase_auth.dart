@@ -7,8 +7,7 @@ abstract class BaseAuthService with ChangeNotifier {
   Future<User> currentUser();
   Future<User> signIn(String email, String password);
   Future<User> updateUser(User user);
-  Future<User> createNewUser(
-      String nickname, String email, String password);
+  Future<User> createNewUser(String nickname, String email, String password);
   //Future<void> signOut();
 }
 
@@ -19,7 +18,7 @@ class FirebaseAuthService extends BaseAuthService {
   final Auth _firebaseAuth;
   @override
   Future<User> createNewUser(
-      String nickname,  String email, String password) async {
+      String nickname, String email, String password) async {
     try {
       var auth =
           await _firebaseAuth.createUserWithEmailAndPassword(email, password);
@@ -35,18 +34,22 @@ class FirebaseAuthService extends BaseAuthService {
   }
 
   Future<User> currentUser() async {
-    return await _firebaseAuth.currentUser;
+    return _firebaseAuth.currentUser;
   }
 
   Future<User> signIn(String email, String password) async {
-    try {
-      var auth =
-          await _firebaseAuth.signInWithEmailAndPassword(email, password);
+    User signedInUser;
+    _firebaseAuth.setPersistence(fb.Persistence.NONE).then((value) {
+      try {
+        _firebaseAuth.signInWithEmailAndPassword(email, password).then((auth) {
           notifyListeners();
-      return auth.user;
-    } catch (e) {
-      throw Exception(e);
-    }
+          signedInUser = auth.user;
+        });
+      } catch (e) {
+        throw Exception(e);
+      }
+    });
+    return signedInUser;
   }
 
   // @override
@@ -58,21 +61,21 @@ class FirebaseAuthService extends BaseAuthService {
 
   @override
   Future<User> updateUser(User user) async {
-   final CollectionReference ref = fb.firestore().collection('users');
-   String displayName = user.displayName;
+    final CollectionReference ref = fb.firestore().collection('users');
+    String displayName = user.displayName;
 
-   if (displayName == null) {
-     displayName = "No Name yet";
-   }
-   var newData = {
-     'uid': user.uid,
-     'name': displayName,
-     'email': user.email,
-     'lastActive': DateTime.now()
-   };
+    if (displayName == null) {
+      displayName = "No Name yet";
+    }
+    var newData = {
+      'uid': user.uid,
+      'name': displayName,
+      'email': user.email,
+      'lastActive': DateTime.now()
+    };
 
-   await ref.doc(user.uid).set(newData, SetOptions(merge: true));
+    await ref.doc(user.uid).set(newData, SetOptions(merge: true));
 
-   return user;
+    return user;
   }
 }
