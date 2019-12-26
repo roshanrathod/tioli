@@ -7,8 +7,8 @@ import 'package:tioli/views/login_action_view.dart';
 import 'package:tioli/views/products_view.dart';
 
 const String HOME = '/';
-const String LOGIN = 'FIREBASE_LOGIN';
-const String PRODUCTS = 'USER_PROFILE';
+const String LOGIN = 'LOGIN';
+const String PRODUCTS = 'PRODUCTS';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   print("route settings name : $routeSettings.name");
