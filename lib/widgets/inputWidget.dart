@@ -10,9 +10,10 @@ class InputWidget extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Padding (
-      padding:  EdgeInsets.only(right:  20, bottom: 30),
+      padding:  EdgeInsets.only(right:  20, bottom: 20),
       child: Container (
       width: MediaQuery.of(context).size.width -40,
+      height: 40,
       child:  Material(
         elevation: 10,
         color: Colors.white,

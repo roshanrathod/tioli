@@ -5,55 +5,78 @@ import 'package:tioli/router.dart' as router;
 
 class LoginActionView extends StatefulWidget {
   final String title;
-  
 
   LoginActionView({Key key, this.title}) : super(key: key);
   @override
   _LoginActionViewState createState() => new _LoginActionViewState();
 }
 
-class _LoginActionViewState extends State<LoginActionView> {
+class _LoginActionViewState extends State<LoginActionView>
+    with SingleTickerProviderStateMixin {
   final firebaseAuth = new FirebaseAuthService();
   bool _isRegisterFormVisible = false;
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController nicknameController = new TextEditingController();
+  TabController _tabController;
 
-  void createUserAndSignin() async {
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabChange);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _handleTabChange() {
+    var index = _tabController.index;
+    print("Tab changed to index : $index");
+    if (index == 0) {
+      setState(() {
+        _isRegisterFormVisible = false;
+      });
+    } else {
+      setState(() {
+        _isRegisterFormVisible = true;
+      });
+    }
+  }
+
+  submitForm() async {
     try {
-      firebaseAuth
-          .createNewUser(
-              nicknameController.text, emailController.text, passwordController.text)
-          .then((value) {
-        setState(() {
-          Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
-              arguments: value);
+      if (_isRegisterFormVisible) {
+        firebaseAuth
+            .createNewUser(nicknameController.text, emailController.text,
+                passwordController.text)
+            .then((value) {
+          setState(() {
+            Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
+                arguments: value);
+          });
+          print("value returned after login : $value");
         });
-        print("value returned after login : $value");
-      });
+      } else {
+        firebaseAuth
+            .signIn(emailController.text, passwordController.text)
+            .then((value) {
+          setState(() {
+            Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
+                arguments: value);
+          });
+        });
+      }
     } catch (e) {
-      print('Unable to login for error : $e');
+      print("Unable to login user due to enter $e");
     }
   }
 
-  void loginExistingUser()
-  {
-    try{
-      firebaseAuth.signIn(emailController.text, passwordController.text).then((value){
-        setState(() {
-          Navigator.pushReplacementNamed(this.context, router.PRODUCTS, arguments:value);
-        });
-      });
-    }
-    catch(e) {
-      print('Unable to login for error : $e');
-    }
-  }
-
-  void showRegisterForm()
-  {
+  void showRegisterForm() {
     setState(() {
-       _isRegisterFormVisible = true; 
+      _isRegisterFormVisible = true;
     });
   }
 
@@ -64,41 +87,42 @@ class _LoginActionViewState extends State<LoginActionView> {
         Padding(
           padding: EdgeInsets.only(top: 10),
         ),
-        if (_isRegisterFormVisible)  Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(left: 10, bottom: 0),
-              child: Text(
-                'Nickname',
-                style: TextStyle(fontSize: 16, color: Color(0xFF999A9A)),
+        if (_isRegisterFormVisible)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(left: 10, bottom: 0),
+                child: Text(
+                  'Nickname',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF999A9A)),
+                ),
               ),
-            ),
-            Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                InputWidget(10.0, 0.0,nicknameController),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Padding(
-                        padding: EdgeInsets.only(top: 50),
-                        child: Text(
-                          'Pick a cool nickname for yourself ...',
-                          textAlign: TextAlign.end,
-                          style:
-                              TextStyle(color: Color(0xFFA0A0A0), fontSize: 12),
-                        ),
-                      )),
-                    ],
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
+              Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  InputWidget(10.0, 0.0, nicknameController),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                            child: Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Text(
+                            'Pick a cool nickname for yourself ...',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                                color: Color(0xFFA0A0A0), fontSize: 12),
+                          ),
+                        )),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -173,59 +197,40 @@ class _LoginActionViewState extends State<LoginActionView> {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(top: 0),
+          padding: EdgeInsets.only(top: 20),
         ),
-        if(!_isRegisterFormVisible)
-        RaisedButton(
-            onPressed: showRegisterForm,
-            textColor: Colors.white,
-            padding: const EdgeInsets.all(0.0),
-            child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: <Color>[
-                      Color(0xFF0D47A1),
-                      Color(0xFF1976D2),
-                      Color(0xFF42A5F5),
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.all(10.0),
-                child: const Text('Register', style: TextStyle(fontSize: 20)))),
-       if(!_isRegisterFormVisible)
-        RaisedButton(
-            onPressed: loginExistingUser,
-            textColor: Colors.white,
-            padding: const EdgeInsets.all(0.0),
-            child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: <Color>[
-                      Color(0xFF0D47A1),
-                      Color(0xFF1976D2),
-                      Color(0xFF42A5F5),
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.all(10.0),
-                child: const Text('Login', style: TextStyle(fontSize: 28)))),
-                if(_isRegisterFormVisible)
-        RaisedButton(
-            onPressed: createUserAndSignin,
-            textColor: Colors.white,
-            padding: const EdgeInsets.all(0.0),
-            child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: <Color>[
-                      Color(0xFF0D47A1),
-                      Color(0xFF1976D2),
-                      Color(0xFF42A5F5),
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.all(10.0),
-                child: const Text('Signup', style: TextStyle(fontSize: 28)))),
+        FloatingActionButton.extended(
+          onPressed: submitForm,
+          label: Text(''),
+          icon: Icon(
+            Icons.arrow_forward,
+            size: 30.0,
+          ),
+          backgroundColor: Colors.blue,
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 30),
+        ),
+        Column(children: <Widget>[
+          TabBar(
+            indicatorColor: Colors.blue[300],
+            labelColor: const Color(0xFF3baee7),
+            unselectedLabelColor: Colors.lightBlue[100],
+            labelStyle: TextStyle(
+                fontFamily: 'Open Sans',
+                fontSize: 15,
+                fontWeight: FontWeight.bold),
+            tabs: [
+              Tab(
+                text: "LOGIN",
+              ),
+              Tab(
+                text: "REGISTER",
+              )
+            ],
+            controller: _tabController,
+          )
+        ])
       ],
     );
   }
