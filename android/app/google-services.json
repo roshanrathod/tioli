@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "624629575687",
+    "firebase_url": "https://tioli-c7b5e.firebaseio.com",
+    "project_id": "tioli-c7b5e",
+    "storage_bucket": "tioli-c7b5e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624629575687:android:025042066a557b077b3aa2",
+        "android_client_info": {
+          "package_name": "com.eurekaaa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624629575687-usqr2ufsb7m3uk2ai6lr5c5fuh7crf2o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHtEHYOS7zVTtOZwGFVg__nuOB7_6544U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624629575687-usqr2ufsb7m3uk2ai6lr5c5fuh7crf2o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

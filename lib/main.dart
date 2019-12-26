@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //if (firebase.apps == null) {
+    if (firebase.apps.length == 0) {
       firebase.initializeApp(
           apiKey: "AIzaSyDPrjwS1PyZ5RI-_36GH1WitD9ZENAJrDQ",
           authDomain: "tioli-c7b5e.firebaseapp.com",
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           projectId: "tioli-c7b5e",
           storageBucket: "tioli-c7b5e.appspot.com",
           messagingSenderId: "624629575687");
-    //}
+    }
 
     return MaterialApp(
       title: 'Take it or Leave it',
