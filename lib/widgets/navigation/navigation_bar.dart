@@ -5,29 +5,26 @@ class NavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //80% of screen width
+    double c_width = MediaQuery.of(context).size.width*0.8;
     return Container(
-      height: 50,
-      child: Row(
-         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+     
+     // width: c_width,
+      child: Wrap(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        alignment:WrapAlignment.center,
+         spacing: 8.0, // gap between adjacent chips
+  runSpacing: 4.0, // gap between lines
         children: <Widget>[
-          SizedBox(height: 80, width: 150, child: Image.asset('assets/logo.png')),
-          Text(
-            'Welcome to TIOLI\n', 
-            style: TextStyle(fontWeight: FontWeight.w600, height: 0.9, fontSize: 30)
-            ),
+          SizedBox( 
+            height: 80, width: 150, child: Image.asset('assets/logo.png')),
+                               
             Text(
             '\nTake It Or Leave It\n', 
-            style: TextStyle(fontWeight: FontWeight.w300, height: 0.9, fontSize: 30)
-            ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _NavBarItem('Home'),
-              SizedBox(width: 60,),
-              _NavBarItem('About')
-            ],
-          )
-
+            style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20)
+            ),  
+               
+          
         ],
       ),
     );

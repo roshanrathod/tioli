@@ -115,18 +115,19 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                         child: Text(data.description,
                             style:
                                 TextStyle(fontSize: 15, color: Colors.black)))),
-                Expanded(
-                    flex: 2,
+                if(_visible)
+                  Expanded(
+                    flex: 2,                    
                     child: Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: FloatingActionButton.extended(
+                      padding:  EdgeInsets.only(right: 10),                   
+                      child:                       
+                        FloatingActionButton.extended(
                           backgroundColor: Colors.green,
                           onPressed: () {
                             _addUserForItem(_id);
 
                             setState(() {
-                              _visible = !_visible;
-                              _alignment = Alignment.center;
+                              _visible = false;                              
                             });
                           },
                           icon: Icon(Icons.check_circle),

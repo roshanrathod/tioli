@@ -9,19 +9,21 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Colors.white,
       body: CenteredView(
-              child: Column(
+        child: Column(
           children: <Widget>[
             NavigationBar(),
             Expanded(
               child: Row(
                 children: <Widget>[
-                    Expanded(child: Center(child: LoginActionView(title: 'LOGIN PAGE',),
+                  Expanded(
+                    child: Center(
+                      child: LoginActionView(
+                        title: 'LOGIN PAGE',
+                      ),
                     ),
-                    )
-                   
+                  )
                 ],
               ),
             )

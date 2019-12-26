@@ -101,24 +101,7 @@ class _LoginActionViewState extends State<LoginActionView>
               Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
-                  InputWidget(10.0, 0.0, nicknameController),
-                  Padding(
-                    padding: EdgeInsets.only(right: 20),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                            child: Padding(
-                          padding: EdgeInsets.only(top: 50),
-                          child: Text(
-                            'Pick a cool nickname for yourself ...',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                                color: Color(0xFFA0A0A0), fontSize: 12),
-                          ),
-                        )),
-                      ],
-                    ),
-                  )
+                  InputWidget(10.0, 0.0, false, 'Pick a cool nickname for yourself ...', nicknameController),                 
                 ],
               )
             ],
@@ -136,24 +119,7 @@ class _LoginActionViewState extends State<LoginActionView>
             Stack(
               alignment: Alignment.center,
               children: <Widget>[
-                InputWidget(10.0, 0.0, emailController),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Padding(
-                        padding: EdgeInsets.only(top: 50),
-                        child: Text(
-                          'Enter your email id to continue ...',
-                          textAlign: TextAlign.end,
-                          style:
-                              TextStyle(color: Color(0xFFA0A0A0), fontSize: 12),
-                        ),
-                      )),
-                    ],
-                  ),
-                )
+                InputWidget(10.0, 0.0, false,'Enter your email address to continue ...', emailController),              
               ],
             )
           ],
@@ -168,30 +134,13 @@ class _LoginActionViewState extends State<LoginActionView>
               padding: EdgeInsets.only(left: 10, bottom: 0),
               child: Text(
                 'Password',
-                style: TextStyle(fontSize: 16, color: Color(0xFF999A9A)),
+                style: TextStyle(fontSize: 16, color: Color(0xFF999A9A), ),
               ),
             ),
             Stack(
               alignment: Alignment.center,
               children: <Widget>[
-                InputWidget(1.0, 0.0, passwordController),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Padding(
-                        padding: EdgeInsets.only(top: 50),
-                        child: Text(
-                          'Enter your password to continue ...',
-                          textAlign: TextAlign.end,
-                          style:
-                              TextStyle(color: Color(0xFFA0A0A0), fontSize: 12),
-                        ),
-                      )),
-                    ],
-                  ),
-                )
+                InputWidget(1.0, 0.0, true, 'Enter your password to continue ...', passwordController),               
               ],
             )
           ],
@@ -199,7 +148,7 @@ class _LoginActionViewState extends State<LoginActionView>
         Padding(
           padding: EdgeInsets.only(top: 20),
         ),
-        FloatingActionButton.extended(
+        FloatingActionButton.extended(          
           onPressed: submitForm,
           label: Text(''),
           icon: Icon(
@@ -207,12 +156,14 @@ class _LoginActionViewState extends State<LoginActionView>
             size: 30.0,
           ),
           backgroundColor: Colors.blue,
-        ),
+        ), 
         Padding(
           padding: EdgeInsets.only(top: 30),
         ),
-        Column(children: <Widget>[
-          TabBar(
+        Expanded(          
+          child: new Align(
+            alignment: Alignment.bottomCenter,
+            child: TabBar(
             indicatorColor: Colors.blue[300],
             labelColor: const Color(0xFF3baee7),
             unselectedLabelColor: Colors.lightBlue[100],
@@ -230,7 +181,9 @@ class _LoginActionViewState extends State<LoginActionView>
             ],
             controller: _tabController,
           )
-        ])
+        ),
+          )
+          
       ],
     );
   }
