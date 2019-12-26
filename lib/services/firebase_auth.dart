@@ -6,11 +6,10 @@ import 'package:flutter/cupertino.dart';
 abstract class BaseAuthService with ChangeNotifier {
   Future<User> currentUser();
   Future<User> signIn(String email, String password);
-  Future<User> googleSignIn();
   Future<User> updateUser(User user);
   Future<User> createNewUser(
-      String firstName, String lastName, String email, String password);
-  Future<void> signOut();
+      String nickname, String email, String password);
+  //Future<void> signOut();
 }
 
 class FirebaseAuthService extends BaseAuthService {
@@ -20,13 +19,12 @@ class FirebaseAuthService extends BaseAuthService {
   final Auth _firebaseAuth;
   @override
   Future<User> createNewUser(
-      String firstName, String lastName, String email, String password) async {
+      String nickname,  String email, String password) async {
     try {
-      print("trying to add new user from auth service");
       var auth =
           await _firebaseAuth.createUserWithEmailAndPassword(email, password);
       var info = fb.UserProfile();
-      info.displayName = '$firstName $lastName';
+      info.displayName = '$nickname';
       await auth.user.updateProfile(info);
       updateUser(auth.user);
       return auth.user;
@@ -51,32 +49,24 @@ class FirebaseAuthService extends BaseAuthService {
     }
   }
 
-  @override
-  Future<User> googleSignIn() {
-    // TODO: implement googleSignIn
-    return null;
-  }
-
-  @override
-  Future<void> signOut() {
-      _firebaseAuth.signOut();
-    notifyListeners();
-    return null;
-  }
+  // @override
+  // Future<void> signOut() {
+  //     _firebaseAuth.signOut();
+  //   notifyListeners();
+  //   return null;
+  // }
 
   @override
   Future<User> updateUser(User user) async {
    final CollectionReference ref = fb.firestore().collection('users');
    String displayName = user.displayName;
-   //String photoUrl = user.photoURL;
 
    if (displayName == null) {
      displayName = "No Name yet";
    }
    var newData = {
      'uid': user.uid,
-     'displayName': displayName,
-     //'photoUrl': photoUrl,
+     'name': displayName,
      'email': user.email,
      'lastActive': DateTime.now()
    };

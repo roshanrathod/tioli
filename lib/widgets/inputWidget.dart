@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class InputWidget extends StatelessWidget {
   final double topRight;
   final double bottomRight;
+  final TextEditingController inputController;
 
-  InputWidget(this.topRight, this.bottomRight);
+  InputWidget(this.topRight, this.bottomRight, this.inputController);
 
   Widget build(BuildContext context) {
     return Padding (
@@ -23,6 +24,7 @@ class InputWidget extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 40, right: 20,top: 10),
             child: TextField(
+              controller: inputController,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: "JohnDoe@example.com",
