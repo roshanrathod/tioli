@@ -74,9 +74,9 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
   _buildStoryPage(Inventory data, bool active) {
     // Animated Properties
     final double blur = active ? 30 : 0;
-    final double offset = active ? 20 : 0;
-    final double top = active ? 100 : 200;
-    var _alignment = Alignment.bottomCenter;
+    final double offset = active ? 35 : 0;
+    final double top = active ? 10 : 15;
+    var _alignment = Alignment.center;
     var _id = data.id;
     bool _visible = true;
 
@@ -117,12 +117,12 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                                 TextStyle(fontSize: 15, color: Colors.black)))),
                 if(_visible)
                   Expanded(
-                    flex: 2,                    
+                    flex: 4,                    
                     child: Padding(
                       padding:  EdgeInsets.only(right: 10),                   
                       child:                       
                         FloatingActionButton.extended(
-                          backgroundColor: Colors.green,
+                          backgroundColor: Colors.yellow,
                           onPressed: () {
                             _addUserForItem(_id);
 
@@ -130,7 +130,7 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                               _visible = false;                              
                             });
                           },
-                          icon: Icon(Icons.check_circle),
+                          //icon: Icon(Icons.check_circle),
                           label: Text("I want it!")),
                     )),
               ],
@@ -163,20 +163,19 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your Stories',
-          style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          'Swipe left to view and select items',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, fontFamily: 'comic sans ms'),
+          textAlign: TextAlign.center,
         ),
-        Text('FILTER', style: TextStyle(color: Colors.black26)),
-        _buildButton('favorites')
       ],
     ));
   }
 
-  _buildButton(tag) {
-    Color color = tag == activeTag ? Colors.purple : Colors.white;
-    return FlatButton(
-        color: color,
-        child: Text('#$tag'),
-        onPressed: () => _queryDb(tag: tag));
-  }
+  // _buildButton(tag) {
+  //   Color color = tag == activeTag ? Colors.purple : Colors.white;
+  //   return FlatButton(
+  //       color: color,
+  //       child: Text('#$tag'),
+  //       onPressed: () => _queryDb(tag: tag));
+  // }
 }
