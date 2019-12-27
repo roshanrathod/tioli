@@ -7,6 +7,8 @@ class Inventory {
   String id;
   String description;
   var users;
+  Map<String, dynamic> data;
+  List<dynamic> modifiedUsers = [];
 
   final CollectionReference ref;
 
@@ -28,5 +30,24 @@ class Inventory {
     }
 
     return allItems;
+  }
+
+  updateUserForItem(_id,_currentUser) async {
+    await ref.doc(_id).get().then((dataQueried){
+      data = dataQueried.data(); 
+      if(data['users']!=null)
+      modifiedUsers = data['users'] !=null? data['users'] : [];
+      print("existing users : $modifiedUsers");
+      modifiedUsers.add(_currentUser);
+      var newData = {
+      'id':data['id'],
+      'users': modifiedUsers,
+      'title': data['title'],
+      'description': data['description'],
+      'img':data['img']
+    };
+      print("new list of users to be added : $modifiedUsers");
+      ref.doc(_id).set(newData, SetOptions(merge: true));
+    });
   }
 }

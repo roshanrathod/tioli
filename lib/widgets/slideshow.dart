@@ -1,6 +1,10 @@
+import 'dart:html';
+
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase/firestore.dart';
+import 'package:tioli/services/firebase_auth.dart';
 
 import '../services/firebase_products.dart';
 
@@ -10,14 +14,15 @@ class SlideShowWidget extends StatefulWidget {
 
 class SlideShowWidgetState extends State<SlideShowWidget> {
   PageController ctrl;
-
+ bool _userWantsItem = false;
   List<Inventory> slides;
   int totalItems;
-
+  User currentUser;
   String activeTag = 'favorites';
 
   //tracking current page
   int currentPage = 0;
+  final firebaseAuth = new FirebaseAuthService();
 
   @override
   void initState() {
@@ -36,6 +41,8 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
       }
     });
   }
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +70,9 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
     Inventory inv = new Inventory();
     slides = await inv.getAllItems();
     totalItems = slides.length + 1;
+    await firebaseAuth.currentUser().then((user){
+      this.currentUser = user;
+    });
     // // Update the active tag
     // setState(() {
     //   activeTag = tag;
@@ -78,8 +88,29 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
     final double top = active ? 10 : 15;
     var _alignment = Alignment.center;
     var _id = data.id;
-    bool _visible = true;
+  
+ _addUserForItem(_id) async{
+    print(_id + "user wants it!");
+    //Add user to inventory database
+    await firebaseAuth.currentUser().then((user) {
+      this.currentUser = user;
+      if(this.currentUser != null)
+      {
+         Inventory inv = new Inventory();
+         inv.updateUserForItem(_id, this.currentUser.displayName);
+      }
+    });
+    setState(() {
+      _userWantsItem = true;
+    });
+  }
 
+  _removeUserForItem(_id) {
+    print(_id + "User doesnot want it");
+    setState(() {
+      _userWantsItem = false;
+    });
+  }
     return Scaffold(
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Expanded(
@@ -113,47 +144,44 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                     child: Padding(
                         padding: EdgeInsets.only(left: 10),
                         child: Text(data.description,
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.black)))),
-                if(_visible)
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black,
+                                fontFamily: 'comic sans ms')))),
+                                //checkifItemIsTaken(data.id),
+                if (!_userWantsItem)
                   Expanded(
-                    flex: 4,                    
-                    child: Padding(
-                      padding:  EdgeInsets.only(right: 10),                   
-                      child:                       
-                        FloatingActionButton.extended(
-                          backgroundColor: Colors.yellow,
-                          onPressed: () {
-                            _addUserForItem(_id);
-
-                            setState(() {
-                              _visible = false;                              
-                            });
-                          },
-                          //icon: Icon(Icons.check_circle),
-                          label: Text("I want it!")),
-                    )),
+                      flex: 5,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: FloatingActionButton.extended(
+                            backgroundColor: Colors.yellow[50],
+                            foregroundColor: Colors.black,
+                            onPressed: ()
+                            {
+                              _addUserForItem(_id);
+                            },
+                            icon: Icon(Icons.check_circle, color: Colors.green[300],),
+                            label: Text("Take it!")),
+                      )),
+                      if (_userWantsItem)
+                  Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: FloatingActionButton.extended(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.black,
+                            onPressed: () {
+                              _removeUserForItem(_id);
+                             },
+                            icon: Icon(Icons.close, color: Colors.red,),
+                            label: Text("Leave it")),
+                      )),
               ],
             ))
       ]),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      // floatingActionButton: FloatingActionButton.extended(
-      //     backgroundColor: Colors.green,
-      //     onPressed: () {
-      //       _addUserForItem(_id);
-
-      //       setState(() {
-      //         _visible = !_visible;
-      //         _alignment = Alignment.center;
-      //       });
-      //     },
-      //     icon: Icon(Icons.check_circle),
-      //     label: Text("I want it!")),
     );
-  }
-
-  _addUserForItem(_id) {
-    print(_id + "user wants it!");
   }
 
   _buildTagPage() {
@@ -164,7 +192,10 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
       children: [
         Text(
           'Swipe left to view and select items',
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, fontFamily: 'comic sans ms'),
+          style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'comic sans ms'),
           textAlign: TextAlign.center,
         ),
       ],
