@@ -2,6 +2,7 @@ import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firebase.dart';
 import 'package:firebase/firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tioli/common/global.dart';
 
 abstract class BaseAuthService with ChangeNotifier {
   Future<User> currentUser();
@@ -16,6 +17,7 @@ class FirebaseAuthService extends BaseAuthService {
       : _firebaseAuth = firebaseAuth ?? auth();
 
   final Auth _firebaseAuth;
+  
   @override
   Future<User> createNewUser(
       String nickname, String email, String password) async {
@@ -26,23 +28,38 @@ class FirebaseAuthService extends BaseAuthService {
       info.displayName = '$nickname';
       await auth.user.updateProfile(info);
       updateUser(auth.user);
+      setGlobalLoggedIn();
       return auth.user;
     } catch (e) {
       print('Error creating new user: $e');
       throw '$e';
     }
   }
-
+ 
+  setGlobalLoggedIn(){
+    var global = new Global();
+    global.isLoggedIn = true;  
+  }
+  
   @override
   Future<User> signIn(String email, String password) async {
     try {
       var auth =
           await _firebaseAuth.signInWithEmailAndPassword(email, password);
+       if(auth.user != null){
+            setGlobalLoggedIn();
+          }
       return auth.user;
     } catch (e) {
       print("Error signin in with given credentials : $e");
     }
     return null;
+  }
+  
+ 
+
+  Future<User> currentUser() async {
+    return _firebaseAuth.currentUser;
   }
 
   Future<User> currentUser() async {
