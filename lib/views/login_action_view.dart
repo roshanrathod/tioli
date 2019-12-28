@@ -1,5 +1,5 @@
-
 import 'dart:html';
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:tioli/common/global.dart';
 import 'package:tioli/widgets/centered_view/centered_view.dart';
@@ -26,18 +26,18 @@ class _LoginActionViewState extends State<LoginActionView>
   TextEditingController nicknameController = new TextEditingController();
   TabController _tabController;
 
-  void initState(){
+  void initState() {
     super.initState();
     //_global.isLoggedIn = false;
-    _global.isLoggedIn.then((val){
+    _global.currentUserName.then((val) {
       setState(() {
-        if(val != null && val == true){
-          print("login val $val");
-          Navigator.pushReplacementNamed(this.context, router.PRODUCTS, arguments: val);
+        if (val != null) {
+          Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
+              arguments: val);
         }
       });
-    });    
-  
+    });
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabChange);
   }
@@ -65,7 +65,7 @@ class _LoginActionViewState extends State<LoginActionView>
   submitForm() async {
     try {
       if (_isRegisterFormVisible) {
-       await firebaseAuth
+        await firebaseAuth
             .createNewUser(nicknameController.text, emailController.text,
                 passwordController.text)
             .then((value) {
@@ -79,21 +79,13 @@ class _LoginActionViewState extends State<LoginActionView>
         await firebaseAuth
             .signIn(emailController.text, passwordController.text)
             .then((value) {
-              User currentUser = value;
-              if(currentUser!=null)
-              {
-                print("current user after signin : "+currentUser.displayName);
-              }
           setState(() {
-            
-           // window.console.dir(value);
-           // if(value != null){ //TODO: Need to check on this - value is always NULL
+            //window.console.dir(value);
+            if (value != null) {
               Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
-                arguments: value.displayName);
-          //  }
-            
-          });           
-
+                  arguments: value.displayName);
+            }
+          });
         });
       }
     } catch (e) {

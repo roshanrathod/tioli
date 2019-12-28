@@ -141,16 +141,16 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                   Expanded(
                       flex: 5,
                       child: Padding(
-                        padding: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.only(top: 5, right:10),
                         child: FloatingActionButton.extended(
-                            backgroundColor: Colors.yellow[50],
-                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.green[400],
+                            foregroundColor: Colors.white,
                             onPressed: () {
                               _addUserForItem(_id);
                             },
                             icon: Icon(
-                              Icons.check_circle,
-                              color: Colors.green[300],
+                              Icons.add_circle,
+                              color: Colors.white,
                             ),
                             label: Text("Take it!")),
                       )),
@@ -158,16 +158,16 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                   Expanded(
                       flex: 5,
                       child: Padding(
-                        padding: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.only(top:5, right: 10),
                         child: FloatingActionButton.extended(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.red[400],
+                            foregroundColor: Colors.white,
                             onPressed: () {
                               _removeUserForItem(_id);
                             },
                             icon: Icon(
-                              Icons.close,
-                              color: Colors.red,
+                              Icons.remove_circle,
+                              color: Colors.white,
                             ),
                             label: Text("Leave it")),
                       )),

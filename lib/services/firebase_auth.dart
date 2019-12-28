@@ -28,7 +28,7 @@ class FirebaseAuthService extends BaseAuthService {
       info.displayName = '$nickname';
       await auth.user.updateProfile(info);
       updateUser(auth.user);
-      setGlobalLoggedIn();
+      setGlobalLoggedIn(auth.user.displayName);
       return auth.user;
     } catch (e) {
       print('Error creating new user: $e');
@@ -36,9 +36,10 @@ class FirebaseAuthService extends BaseAuthService {
     }
   }
  
-  setGlobalLoggedIn(){
+  setGlobalLoggedIn(String displayName){
     var global = new Global();
     global.isLoggedIn = true;  
+    global.currentUserName = displayName;
   }
   
   @override
@@ -47,7 +48,7 @@ class FirebaseAuthService extends BaseAuthService {
       var auth =
           await _firebaseAuth.signInWithEmailAndPassword(email, password);
        if(auth.user != null){
-            setGlobalLoggedIn();
+            setGlobalLoggedIn(auth.user.displayName);
           }
       return auth.user;
     } catch (e) {
@@ -57,10 +58,6 @@ class FirebaseAuthService extends BaseAuthService {
   }
   
  
-
-  Future<User> currentUser() async {
-    return _firebaseAuth.currentUser;
-  }
 
   Future<User> currentUser() async {
     return _firebaseAuth.currentUser;

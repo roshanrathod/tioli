@@ -4,13 +4,12 @@ class Global {
   String _userId = "strUserId";
   String _isUserLoggedIn = "bLoggedIn";
 
-get isLoggedIn => SharedPreferencesHelper.boolGetValue(_isUserLoggedIn);
+  get isLoggedIn => SharedPreferencesHelper.boolGetValue(_isUserLoggedIn);
   set isLoggedIn(bool value) =>
       SharedPreferencesHelper.boolAddKey(_isUserLoggedIn, value);
 
-  get currentUserId async =>
-      SharedPreferencesHelper.strGetValue(_userId);
-  set currentUserId(String value) =>
+  get currentUserName => SharedPreferencesHelper.strGetValue(_userId);
+  set currentUserName(String value) =>
       SharedPreferencesHelper.strAddKey(_userId, value);
 
   Future<bool> isUserLoggedIn() async{
