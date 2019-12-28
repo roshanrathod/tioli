@@ -24,7 +24,7 @@ class InputWidget extends StatelessWidget {
             topRight: Radius.circular(topRight)
           ) ),
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 20,top: 10),
+            padding: EdgeInsets.only(left: 10, right: 20,top: 0),
             child: TextField(
               obscureText: obscureTypedText,
               controller: inputController,
@@ -32,6 +32,7 @@ class InputWidget extends StatelessWidget {
                 border: InputBorder.none,   
                 hintText: inputHint,             
                 hintStyle: TextStyle(color: Color(0xFFE1E1E1), fontSize: 14)),
+      
           ),
             ),
           ),
