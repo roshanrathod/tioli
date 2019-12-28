@@ -32,13 +32,21 @@ class Inventory {
     return allItems;
   }
 
-  updateUserForItem(_id,_currentUser) async {
+  updateUserForItem(_id,_currentUser, addUser) async {
     await ref.doc(_id).get().then((dataQueried){
       data = dataQueried.data(); 
       if(data['users']!=null)
       modifiedUsers = data['users'] !=null? data['users'] : [];
       print("existing users : $modifiedUsers");
-      modifiedUsers.add(_currentUser);
+      if(addUser)
+      {
+         modifiedUsers.add(_currentUser);
+      }
+      else
+      { 
+        modifiedUsers.remove(_currentUser);
+      }
+     
       var newData = {
       'id':data['id'],
       'users': modifiedUsers,

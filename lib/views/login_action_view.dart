@@ -1,3 +1,4 @@
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:tioli/widgets/inputWidget.dart';
 import 'package:tioli/services/firebase_auth.dart';
@@ -49,7 +50,7 @@ class _LoginActionViewState extends State<LoginActionView>
   submitForm() async {
     try {
       if (_isRegisterFormVisible) {
-        firebaseAuth
+       await firebaseAuth
             .createNewUser(nicknameController.text, emailController.text,
                 passwordController.text)
             .then((value) {
@@ -60,12 +61,17 @@ class _LoginActionViewState extends State<LoginActionView>
           print("value returned after login : $value");
         });
       } else {
-        firebaseAuth
+        await firebaseAuth
             .signIn(emailController.text, passwordController.text)
             .then((value) {
+              User currentUser = value;
+              if(currentUser!=null)
+              {
+                print("current user after signin : "+currentUser.displayName);
+              }
           setState(() {
             Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
-                arguments: value);
+                arguments: value.displayName);
           });
         });
       }

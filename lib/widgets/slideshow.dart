@@ -1,35 +1,29 @@
-import 'dart:html';
-
-import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:firebase/firestore.dart';
 import 'package:tioli/services/firebase_auth.dart';
-
 import '../services/firebase_products.dart';
 
 class SlideShowWidget extends StatefulWidget {
+  final String currenUserDisplayName;
+  SlideShowWidget({Key key, this.currenUserDisplayName}) : super(key: key);
   createState() => SlideShowWidgetState();
 }
 
 class SlideShowWidgetState extends State<SlideShowWidget> {
   PageController ctrl;
- bool _userWantsItem = false;
+  bool _userWantsItem = false;
   List<Inventory> slides;
   int totalItems;
-  User currentUser;
   String activeTag = 'favorites';
 
   //tracking current page
   int currentPage = 0;
   final firebaseAuth = new FirebaseAuthService();
-
   @override
-  void initState() {
+  Future<void> initState() {
     super.initState();
     ctrl = PageController();
     _queryDb();
-
     // Set state when page changes
     ctrl.addListener(() {
       int next = ctrl.page.round();
@@ -41,8 +35,6 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
       }
     });
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -56,27 +48,15 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
               } else if (slides.length >= currentIdx) {
                 // Active page
                 bool active = currentIdx == currentPage;
-                // print(active.toString() + " | " + currentIdx.toString());
                 return _buildStoryPage(slides[currentIdx - 1], active);
               }
             }));
   }
 
   void _queryDb({String tag = 'favorites'}) async {
-    // Make a Query
-    // Query query = db.collection('stories').where('tags', arrayContains: tag);
-
-    // Map the documents to the data payload
     Inventory inv = new Inventory();
     slides = await inv.getAllItems();
     totalItems = slides.length + 1;
-    await firebaseAuth.currentUser().then((user){
-      this.currentUser = user;
-    });
-    // // Update the active tag
-    // setState(() {
-    //   activeTag = tag;
-    // });
   }
 
 // Builder Functions
@@ -88,37 +68,46 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
     final double top = active ? 10 : 15;
     var _alignment = Alignment.center;
     var _id = data.id;
-  
- _addUserForItem(_id) async{
-    print(_id + "user wants it!");
-    //Add user to inventory database
-    await firebaseAuth.currentUser().then((user) {
-      this.currentUser = user;
-      if(this.currentUser != null)
-      {
-         Inventory inv = new Inventory();
-         inv.updateUserForItem(_id, this.currentUser.displayName);
-      }
-    });
-    setState(() {
+    List<dynamic> usersOfCurrentItem = data.users;
+    if (usersOfCurrentItem != null &&
+        usersOfCurrentItem.contains(widget.currenUserDisplayName)) {
       _userWantsItem = true;
-    });
-  }
-
-  _removeUserForItem(_id) {
-    print(_id + "User doesnot want it");
-    setState(() {
+    } else {
       _userWantsItem = false;
-    });
-  }
+    }
+
+    _addUserForItem(_id) async {
+      await data.updateUserForItem(_id, widget.currenUserDisplayName, true);
+      await _queryDb();
+      //}
+      setState(() {
+        _userWantsItem = true;
+      });
+    }
+
+    _removeUserForItem(_id) async {
+      await data.updateUserForItem(_id, widget.currenUserDisplayName, false);
+      await _queryDb();
+      setState(() {
+        _userWantsItem = false;
+      });
+    }
+
     return Scaffold(
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Expanded(
+          child: Text(
+            'Welcome ' + widget.currenUserDisplayName,
+            style: TextStyle(fontSize: 10, fontFamily: 'comic sans ms'),
+            textAlign: TextAlign.center,
+          ),
+        ),
         Expanded(
             flex: 9,
             child: AnimatedContainer(
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeOutQuint,
-                margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
@@ -148,7 +137,6 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                                 fontSize: 15,
                                 color: Colors.black,
                                 fontFamily: 'comic sans ms')))),
-                                //checkifItemIsTaken(data.id),
                 if (!_userWantsItem)
                   Expanded(
                       flex: 5,
@@ -157,14 +145,16 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                         child: FloatingActionButton.extended(
                             backgroundColor: Colors.yellow[50],
                             foregroundColor: Colors.black,
-                            onPressed: ()
-                            {
+                            onPressed: () {
                               _addUserForItem(_id);
                             },
-                            icon: Icon(Icons.check_circle, color: Colors.green[300],),
+                            icon: Icon(
+                              Icons.check_circle,
+                              color: Colors.green[300],
+                            ),
                             label: Text("Take it!")),
                       )),
-                      if (_userWantsItem)
+                if (_userWantsItem)
                   Expanded(
                       flex: 5,
                       child: Padding(
@@ -174,8 +164,11 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                             foregroundColor: Colors.black,
                             onPressed: () {
                               _removeUserForItem(_id);
-                             },
-                            icon: Icon(Icons.close, color: Colors.red,),
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
                             label: Text("Leave it")),
                       )),
               ],
@@ -201,12 +194,4 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
       ],
     ));
   }
-
-  // _buildButton(tag) {
-  //   Color color = tag == activeTag ? Colors.purple : Colors.white;
-  //   return FlatButton(
-  //       color: color,
-  //       child: Text('#$tag'),
-  //       onPressed: () => _queryDb(tag: tag));
-  // }
 }
