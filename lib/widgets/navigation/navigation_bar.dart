@@ -20,7 +20,7 @@ class NavigationBar extends StatelessWidget {
             height: 80, width: 150, child: Image.asset('assets/logo.png')),
                                
             Text(
-            '\nTake It Or Leave It\n', 
+            '\nTake It or Leave It\n', 
             style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20)
             ),  
                

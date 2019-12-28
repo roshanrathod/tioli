@@ -2,6 +2,7 @@ import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firebase.dart';
 import 'package:firebase/firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tioli/common/global.dart';
 
 abstract class BaseAuthService with ChangeNotifier {
   Future<User> currentUser();
@@ -16,6 +17,7 @@ class FirebaseAuthService extends BaseAuthService {
       : _firebaseAuth = firebaseAuth ?? auth();
 
   final Auth _firebaseAuth;
+  
   @override
   Future<User> createNewUser(
       String nickname, String email, String password) async {
@@ -26,11 +28,17 @@ class FirebaseAuthService extends BaseAuthService {
       info.displayName = '$nickname';
       await auth.user.updateProfile(info);
       updateUser(auth.user);
+      setGlobalLoggedIn();
       return auth.user;
     } catch (e) {
       print('Error in sign in with credentials: $e');
       throw '$e';
     }
+  }
+
+  setGlobalLoggedIn(){
+    var global = new Global();
+    global.isLoggedIn = true;  
   }
 
   Future<User> currentUser() async {
@@ -39,16 +47,20 @@ class FirebaseAuthService extends BaseAuthService {
 
   Future<User> signIn(String email, String password) async {
     User signedInUser;
-    _firebaseAuth.setPersistence(fb.Persistence.NONE).then((value) {
+    _firebaseAuth.setPersistence(fb.Persistence.LOCAL).then((value) {
       try {
         _firebaseAuth.signInWithEmailAndPassword(email, password).then((auth) {
           notifyListeners();
           signedInUser = auth.user;
+          if(signedInUser != null){
+            setGlobalLoggedIn();
+          }
         });
       } catch (e) {
         throw Exception(e);
       }
-    });
+    });     
+    
     return signedInUser;
   }
 
