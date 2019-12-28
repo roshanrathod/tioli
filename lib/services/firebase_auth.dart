@@ -31,45 +31,40 @@ class FirebaseAuthService extends BaseAuthService {
       setGlobalLoggedIn();
       return auth.user;
     } catch (e) {
-      print('Error in sign in with credentials: $e');
+      print('Error creating new user: $e');
       throw '$e';
     }
   }
-
+ 
   setGlobalLoggedIn(){
     var global = new Global();
     global.isLoggedIn = true;  
   }
+  
+  @override
+  Future<User> signIn(String email, String password) async {
+    try {
+      var auth =
+          await _firebaseAuth.signInWithEmailAndPassword(email, password);
+       if(auth.user != null){
+            setGlobalLoggedIn();
+          }
+      return auth.user;
+    } catch (e) {
+      print("Error signin in with given credentials : $e");
+    }
+    return null;
+  }
+  
+ 
 
   Future<User> currentUser() async {
     return _firebaseAuth.currentUser;
   }
 
-  Future<User> signIn(String email, String password) async {
-    User signedInUser;
-    _firebaseAuth.setPersistence(fb.Persistence.LOCAL).then((value) {
-      try {
-        _firebaseAuth.signInWithEmailAndPassword(email, password).then((auth) {
-          notifyListeners();
-          signedInUser = auth.user;
-          if(signedInUser != null){
-            setGlobalLoggedIn();
-          }
-        });
-      } catch (e) {
-        throw Exception(e);
-      }
-    });     
-    
-    return signedInUser;
+  Future<User> currentUser() async {
+    return _firebaseAuth.currentUser;
   }
-
-  // @override
-  // Future<void> signOut() {
-  //     _firebaseAuth.signOut();
-  //   notifyListeners();
-  //   return null;
-  // }
 
   @override
   Future<User> updateUser(User user) async {

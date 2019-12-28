@@ -6,8 +6,10 @@ import 'package:tioli/widgets/navigation/navigation_bar.dart';
 import '../widgets/slideshow.dart';
 
 class ProductsView extends StatelessWidget {
-  ProductsView({username: String});
-  final username = null;
+  final String username;
+
+ ProductsView({Key key, this.username}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,8 @@ class ProductsView extends StatelessWidget {
                   ),
                   Expanded(
                     child: Center(
-                      child: SlideShowWidget(),
+                      child: SlideShowWidget(currenUserDisplayName: username),
+
                     ), 
                   )
                 ],
