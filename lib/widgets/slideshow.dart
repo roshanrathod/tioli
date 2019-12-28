@@ -98,15 +98,15 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
         Expanded(
           child: Text(
             'Welcome ' + widget.currenUserDisplayName,
-            style: TextStyle(fontSize: 10, fontFamily: 'comic sans ms'),
+            style: TextStyle(fontSize: 20, fontFamily: 'comic sans ms'),
             textAlign: TextAlign.center,
           ),
         ),
         Expanded(
             flex: 9,
-            child: AnimatedContainer(
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeOutQuint,
+            child: Container(
+               // duration: Duration(milliseconds: 500),
+                //curve: Curves.easeOutQuint,
                 margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -120,10 +120,12 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                           blurRadius: blur,
                           offset: Offset(offset, offset))
                     ]),
-                child: Center(
-                  child: Text(data.title,
-                      style: TextStyle(fontSize: 40, color: Colors.white)),
-                ))),
+                // child: Center(
+                //   child: Text(data.title,
+                //       style: TextStyle(fontSize: 40, color: Colors.white)),
+                // )
+                )
+                ),
         Expanded(
             flex: 1,
             child: Row(
