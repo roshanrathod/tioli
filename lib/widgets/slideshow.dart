@@ -96,6 +96,7 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
     return Scaffold(
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Expanded(
+          flex: 1,
           child: Text(
             'Welcome ' + widget.currenUserDisplayName,
             style: TextStyle(fontSize: 20, fontFamily: 'comic sans ms'),
@@ -103,29 +104,37 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
           ),
         ),
         Expanded(
-            flex: 9,
+            flex: 8,
             child: Container(
-               // duration: Duration(milliseconds: 500),
-                //curve: Curves.easeOutQuint,
-                margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(data.img),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: blur,
-                          offset: Offset(offset, offset))
-                    ]),
-                // child: Center(
-                //   child: Text(data.title,
-                //       style: TextStyle(fontSize: 40, color: Colors.white)),
-                // )
-                )
+              //duration: Duration(milliseconds: 500),
+              //curve: Curves.easeOutQuint,
+              margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  data.img,
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true,
                 ),
+              ),
+              // decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
+              //     // image: DecorationImage(
+              //     //   fit: BoxFit.cover,
+              //     //   image: NetworkImage(data.img),
+              //     // ),
+              //     boxShadow: [
+              //       BoxShadow(
+              //         color: Colors.grey.withOpacity(0.8),
+              //         // spreadRadius: 10,
+              //         // blurRadius: 5,
+              //         offset: Offset(3, 5), // changes position of shadow
+              //       ),
+              //     ]),
+              // child: Center(
+              //   child: Text(data.title,
+              //       style: TextStyle(fontSize: 40, color: Colors.white)),
+              // )
+            )),
         Expanded(
             flex: 1,
             child: Row(
@@ -143,7 +152,7 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                   Expanded(
                       flex: 5,
                       child: Padding(
-                        padding: EdgeInsets.only(top: 5, right:10),
+                        padding: EdgeInsets.only(top: 5, right: 10),
                         child: FloatingActionButton.extended(
                             backgroundColor: Colors.green[400],
                             foregroundColor: Colors.white,
@@ -160,7 +169,7 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                   Expanded(
                       flex: 5,
                       child: Padding(
-                        padding: EdgeInsets.only(top:5, right: 10),
+                        padding: EdgeInsets.only(top: 5, right: 10),
                         child: FloatingActionButton.extended(
                             backgroundColor: Colors.red[400],
                             foregroundColor: Colors.white,
