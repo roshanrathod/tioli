@@ -39,18 +39,29 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView.builder(
-            controller: ctrl,
-            itemCount: totalItems,
-            itemBuilder: (context, int currentIdx) {
-              if (currentIdx == 0) {
-                return _buildTagPage();
-              } else if (slides.length >= currentIdx) {
-                // Active page
-                bool active = currentIdx == currentPage;
-                return _buildStoryPage(slides[currentIdx - 1], active);
-              }
-            }));
+        body: Column(children: [
+      Expanded(
+        child: Text(
+          'Welcome ' + widget.currenUserDisplayName,
+          style: TextStyle(fontSize: 15, fontFamily: 'comic sans ms'),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      Expanded(
+          flex: 9,
+          child: PageView.builder(
+              controller: ctrl,
+              itemCount: totalItems,
+              itemBuilder: (context, int currentIdx) {
+                if (currentIdx == 0) {
+                  return _buildTagPage();
+                } else if (slides.length >= currentIdx) {
+                  // Active page
+                  bool active = currentIdx == currentPage;
+                  return _buildStoryPage(slides[currentIdx - 1], active);
+                }
+              }))
+    ]));
   }
 
   void _queryDb({String tag = 'favorites'}) async {
@@ -96,15 +107,7 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
     return Scaffold(
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Expanded(
-          flex: 1,
-          child: Text(
-            'Welcome ' + widget.currenUserDisplayName,
-            style: TextStyle(fontSize: 20, fontFamily: 'comic sans ms'),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Expanded(
-            flex: 8,
+            flex: 9,
             child: Container(
               //duration: Duration(milliseconds: 500),
               //curve: Curves.easeOutQuint,
