@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tioli/widgets/centered_view/centered_view.dart';
-import 'package:tioli/widgets/navigation/navigation_bar.dart';
+import 'package:tioli/widgets/navigation/top_navigation_bar.dart';
 
 import '../widgets/slideshow.dart';
 
@@ -17,7 +17,7 @@ class ProductsView extends StatelessWidget {
       body: CenteredView(
         child: Column(
           children: <Widget>[
-            NavigationBar(),
+            TopNavigationBar(),
             Expanded(
               child: Row(
                 children: <Widget>[
