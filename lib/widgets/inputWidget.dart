@@ -14,7 +14,7 @@ class InputWidget extends StatelessWidget {
       padding:  EdgeInsets.only(right:  20, bottom: 20),
       child: Container (
       width: MediaQuery.of(context).size.width -40,
-      height: 40,
+      height: 55,
       child:  Material(
         elevation: 1,
         color: Colors.white,
