@@ -6,7 +6,7 @@ import 'package:tioli/widgets/centered_view/centered_view.dart';
 import 'package:tioli/widgets/inputWidget.dart';
 import 'package:tioli/services/firebase_auth.dart';
 import 'package:tioli/router.dart' as router;
-import 'package:tioli/widgets/navigation/navigation_bar.dart';
+import 'package:tioli/widgets/navigation/top_navigation_bar.dart';
 
 class LoginActionView extends StatefulWidget {
   final String title;
@@ -104,7 +104,7 @@ class _LoginActionViewState extends State<LoginActionView>
     return Scaffold(
         body: CenteredView(
             child: Column(children: <Widget>[
-      NavigationBar(),
+      TopNavigationBar(),
       Expanded(
           child: Row(children: <Widget>[
         Padding(
