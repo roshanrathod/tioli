@@ -50,7 +50,6 @@ class SlideShowWidgetState extends State<SlideShowWidget>
 
   void _handleTabChange() {
     var index = _tabController.index;
-    print("Tab changed to index : $index");
     setState(() {
       _showingTabIndex = index;
       switch (_showingTabIndex) {
@@ -142,8 +141,9 @@ class SlideShowWidgetState extends State<SlideShowWidget>
       _negativeButtonText = constants.leaveIt;
     } else if (_showingTabIndex == 2) {
       slides = myItems;
-    } else
+    } else {
       slides = takenItems;
+    }
     totalItems = slides.length + 1;
   }
 
@@ -153,6 +153,11 @@ class SlideShowWidgetState extends State<SlideShowWidget>
     var _id = data.id;
     List<dynamic> interestedUsers = data.interestedUsers;
     String firstUser = data.firstUser;
+    String interestedUsersString = '';
+    if (interestedUsers != null && interestedUsers.length != 0) {
+      interestedUsersString =
+          interestedUsers.reduce((value, element) => value + ',' + element);
+    }
     if (interestedUsers != null &&
             interestedUsers.contains(widget.currenUserDisplayName) ||
         (firstUser == widget.currenUserDisplayName)) {
@@ -165,7 +170,6 @@ class SlideShowWidgetState extends State<SlideShowWidget>
       await data.updateUserForItem(
           _id, widget.currenUserDisplayName, true, _showingTabIndex);
       await _queryDb();
-      //}
       setState(() {
         _userWantsItem = true;
       });
@@ -177,7 +181,6 @@ class SlideShowWidgetState extends State<SlideShowWidget>
       await _queryDb();
       setState(() {
         _userWantsItem = false;
-        print("_userWantsItem : $_userWantsItem ");
       });
     }
 
@@ -190,9 +193,7 @@ class SlideShowWidgetState extends State<SlideShowWidget>
                 "Item booked by : " +
                     data.firstUser +
                     "\n" +
-                    "Users interested in this product : " +
-                    data.interestedUsers
-                        .reduce((value, element) => value + ',' + element),
+                    interestedUsersString,
                 maxLines: 5,
                 style: TextStyle(
                     fontSize: 10,
@@ -202,7 +203,7 @@ class SlideShowWidgetState extends State<SlideShowWidget>
         Expanded(
             flex: 8,
             child: Container(
-             margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+              margin: EdgeInsets.only(top: 5, left: 10, right: 10),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
