@@ -188,18 +188,21 @@ class SlideShowWidgetState extends State<SlideShowWidget>
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         if (_showingTabIndex == 1)
           Expanded(
-            flex: 1,
-            child: Text(
-                "Item booked by : " +
-                    data.firstUser +
-                    "\n" +
-                    interestedUsersString,
-                maxLines: 5,
-                style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.black,
-                    fontFamily: 'comic sans ms')),
-          ),
+              flex: 1,
+              child: new Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                    "Item booked by : " +
+                        data.firstUser +
+                        "\n" +
+                        "Users Interested in this product :" +
+                        interestedUsersString,
+                    maxLines: 5,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontFamily: 'comic sans ms')),
+              )),
         Expanded(
             flex: 8,
             child: Container(
@@ -253,7 +256,7 @@ class SlideShowWidgetState extends State<SlideShowWidget>
                 if (_userWantsItem &&
                     (_showingTabIndex == 2 || _showingTabIndex == 1))
                   Expanded(
-                      flex: 6,
+                      flex: 7,
                       child: Padding(
                         padding: EdgeInsets.only(top: 5, right: 10),
                         child: FloatingActionButton.extended(
@@ -289,6 +292,7 @@ class SlideShowWidgetState extends State<SlideShowWidget>
           textAlign: TextAlign.center,
         ),
       ],
-    ));
+    )
+    );
   }
 }

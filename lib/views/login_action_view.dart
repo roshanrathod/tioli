@@ -198,11 +198,7 @@ class _LoginActionViewState extends State<LoginActionView>
             ),
             FloatingActionButton.extended(
               onPressed: submitForm,
-              label: Text(''),
-              icon: Icon(
-                Icons.arrow_forward,
-                size: 30.0,
-              ),
+              label: Text('Submit'),
               backgroundColor: Colors.blue,
             ),
             Padding(
