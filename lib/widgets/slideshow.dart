@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:tioli/services/firebase_auth.dart';
 import '../services/firebase_products.dart';
+import 'package:tioli/common/constants.dart' as constants;
 
 class SlideShowWidget extends StatefulWidget {
   final String currenUserDisplayName;
@@ -9,12 +10,21 @@ class SlideShowWidget extends StatefulWidget {
   createState() => SlideShowWidgetState();
 }
 
-class SlideShowWidgetState extends State<SlideShowWidget> {
+class SlideShowWidgetState extends State<SlideShowWidget>
+    with SingleTickerProviderStateMixin {
   PageController ctrl;
   bool _userWantsItem = false;
   List<Inventory> slides;
+  List<Inventory> availableItems;
+  List<Inventory> takenItems;
+  List<Inventory> myItems;
   int totalItems;
   String activeTag = 'favorites';
+  TabController _tabController;
+  int _showingTabIndex = 0;
+  String _positiveButtonText;
+  String _negativeButtonText;
+  String textToDisplay = constants.showingAvailableItems;
 
   //tracking current page
   int currentPage = 0;
@@ -32,6 +42,38 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
         setState(() {
           currentPage = next;
         });
+      }
+    });
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_handleTabChange);
+  }
+
+  void _handleTabChange() {
+    var index = _tabController.index;
+    print("Tab changed to index : $index");
+    setState(() {
+      _showingTabIndex = index;
+      switch (_showingTabIndex) {
+        case 0: // available items
+          _positiveButtonText = constants.takeIt;
+          _negativeButtonText = constants.leaveIt;
+          slides = availableItems;
+          textToDisplay = constants.showingAvailableItems;
+          totalItems = availableItems.length + 1;
+          break;
+        case 1: // taken by someone else items
+          _positiveButtonText = constants.interestedInItem;
+          _negativeButtonText = constants.noLongerInterested;
+          slides = takenItems;
+          textToDisplay = constants.showingTakenItems;
+          totalItems = takenItems.length + 1;
+          break;
+        case 2: // items booked by current user
+          _positiveButtonText = constants.takeIt;
+          _negativeButtonText = constants.leaveIt;
+          slides = myItems;
+          textToDisplay = constants.showingMineItems;
+          totalItems = myItems.length + 1;
       }
     });
   }
@@ -54,41 +96,74 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
               itemCount: totalItems,
               itemBuilder: (context, int currentIdx) {
                 if (currentIdx == 0) {
-                  return _buildTagPage();
+                  return _buildTagPage(_showingTabIndex);
                 } else if (slides.length >= currentIdx) {
                   // Active page
                   bool active = currentIdx == currentPage;
                   return _buildStoryPage(slides[currentIdx - 1], active);
                 }
-              }))
+              })),
+      Expanded(
+        child: new Align(
+            alignment: Alignment.bottomCenter,
+            child: TabBar(
+              indicatorColor: Colors.blue[300],
+              labelColor: const Color(0xFF3baee7),
+              unselectedLabelColor: Colors.lightBlue[100],
+              labelStyle: TextStyle(
+                  fontFamily: 'Open Sans',
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold),
+              tabs: [
+                Tab(
+                  text: "AVAILABLE",
+                ),
+                Tab(
+                  text: "TAKEN",
+                ),
+                Tab(
+                  text: "MINE",
+                )
+              ],
+              controller: _tabController,
+            )),
+      )
     ]));
   }
 
   void _queryDb({String tag = 'favorites'}) async {
     Inventory inv = new Inventory();
-    slides = await inv.getAllItems();
+    availableItems = await inv.getAllAvailable();
+    takenItems = await inv.getAllTakenItems(widget.currenUserDisplayName);
+    myItems = await inv.getMyItems(widget.currenUserDisplayName);
+    if (_showingTabIndex == 0) {
+      slides = availableItems;
+      _positiveButtonText = constants.takeIt;
+      _negativeButtonText = constants.leaveIt;
+    } else if (_showingTabIndex == 2) {
+      slides = myItems;
+    } else
+      slides = takenItems;
     totalItems = slides.length + 1;
   }
 
 // Builder Functions
 
   _buildStoryPage(Inventory data, bool active) {
-    // Animated Properties
-    final double blur = active ? 30 : 0;
-    final double offset = active ? 35 : 0;
-    final double top = active ? 10 : 15;
-    var _alignment = Alignment.center;
     var _id = data.id;
-    List<dynamic> usersOfCurrentItem = data.users;
-    if (usersOfCurrentItem != null &&
-        usersOfCurrentItem.contains(widget.currenUserDisplayName)) {
+    List<dynamic> interestedUsers = data.interestedUsers;
+    String firstUser = data.firstUser;
+    if (interestedUsers != null &&
+            interestedUsers.contains(widget.currenUserDisplayName) ||
+        (firstUser == widget.currenUserDisplayName)) {
       _userWantsItem = true;
     } else {
       _userWantsItem = false;
     }
 
     _addUserForItem(_id) async {
-      await data.updateUserForItem(_id, widget.currenUserDisplayName, true);
+      await data.updateUserForItem(
+          _id, widget.currenUserDisplayName, true, _showingTabIndex);
       await _queryDb();
       //}
       setState(() {
@@ -97,21 +172,37 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
     }
 
     _removeUserForItem(_id) async {
-      await data.updateUserForItem(_id, widget.currenUserDisplayName, false);
+      await data.updateUserForItem(
+          _id, widget.currenUserDisplayName, false, _showingTabIndex);
       await _queryDb();
       setState(() {
         _userWantsItem = false;
+        print("_userWantsItem : $_userWantsItem ");
       });
     }
 
     return Scaffold(
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        if (_showingTabIndex == 1)
+          Expanded(
+            flex: 1,
+            child: Text(
+                "Item booked by : " +
+                    data.firstUser +
+                    "\n" +
+                    "Users interested in this product : " +
+                    data.interestedUsers
+                        .reduce((value, element) => value + ',' + element),
+                maxLines: 5,
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                    fontFamily: 'comic sans ms')),
+          ),
         Expanded(
-            flex: 9,
+            flex: 8,
             child: Container(
-              //duration: Duration(milliseconds: 500),
-              //curve: Curves.easeOutQuint,
-              margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+             margin: EdgeInsets.only(top: 5, left: 10, right: 10),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
@@ -120,23 +211,6 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                   gaplessPlayback: true,
                 ),
               ),
-              // decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
-              //     // image: DecorationImage(
-              //     //   fit: BoxFit.cover,
-              //     //   image: NetworkImage(data.img),
-              //     // ),
-              //     boxShadow: [
-              //       BoxShadow(
-              //         color: Colors.grey.withOpacity(0.8),
-              //         // spreadRadius: 10,
-              //         // blurRadius: 5,
-              //         offset: Offset(3, 5), // changes position of shadow
-              //       ),
-              //     ]),
-              // child: Center(
-              //   child: Text(data.title,
-              //       style: TextStyle(fontSize: 40, color: Colors.white)),
-              // )
             )),
         Expanded(
             flex: 1,
@@ -151,9 +225,13 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                                 fontSize: 15,
                                 color: Colors.black,
                                 fontFamily: 'comic sans ms')))),
-                if (!_userWantsItem)
+                /* Show 'take it' button if user is on Available tab
+                   Show 'interested' button if user is on Taken tab and not amongst interested users. 
+                */
+                if (!_userWantsItem && !(_showingTabIndex == 2) ||
+                    _showingTabIndex == 0)
                   Expanded(
-                      flex: 5,
+                      flex: 6,
                       child: Padding(
                         padding: EdgeInsets.only(top: 5, right: 10),
                         child: FloatingActionButton.extended(
@@ -166,11 +244,15 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                               Icons.add_circle,
                               color: Colors.white,
                             ),
-                            label: Text("Take it!")),
+                            label: Text(_positiveButtonText)),
                       )),
-                if (_userWantsItem)
+                /* show 'leave it' button if user is first user and on Mine tab
+                   show 'Not interested' button if user is not first user and on Taken tab.
+                */
+                if (_userWantsItem &&
+                    (_showingTabIndex == 2 || _showingTabIndex == 1))
                   Expanded(
-                      flex: 5,
+                      flex: 6,
                       child: Padding(
                         padding: EdgeInsets.only(top: 5, right: 10),
                         child: FloatingActionButton.extended(
@@ -183,7 +265,7 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
                               Icons.remove_circle,
                               color: Colors.white,
                             ),
-                            label: Text("Leave it")),
+                            label: Text(_negativeButtonText)),
                       )),
               ],
             ))
@@ -191,14 +273,14 @@ class SlideShowWidgetState extends State<SlideShowWidget> {
     );
   }
 
-  _buildTagPage() {
+  _buildTagPage(int tabIndex) {
     return Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Swipe left to view and select items',
+          textToDisplay,
           style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
