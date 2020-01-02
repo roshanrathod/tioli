@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase/firebase.dart' as firebase;
+import 'package:oktoast/oktoast.dart';
 import 'router.dart' as router;
 
 void main() => runApp(MyApp());
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
           messagingSenderId: "624629575687");
     }
 
-    return MaterialApp(
+    return OKToast (
+      child:MaterialApp(
       title: 'Take it or Leave it',
       theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
               Theme.of(context).textTheme.apply(fontFamily: 'Open Sans')),
       onGenerateRoute: router.generateRoute,
       initialRoute: '/',
+    )
     );
   }
 }
