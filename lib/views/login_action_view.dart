@@ -1,6 +1,5 @@
-import 'dart:html';
-import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:tioli/common/global.dart';
 import 'package:tioli/widgets/centered_view/centered_view.dart';
 import 'package:tioli/widgets/inputWidget.dart';
@@ -25,10 +24,10 @@ class _LoginActionViewState extends State<LoginActionView>
   TextEditingController passwordController = new TextEditingController();
   TextEditingController nicknameController = new TextEditingController();
   TabController _tabController;
+  bool _valid = true;
 
   void initState() {
     super.initState();
-    //_global.isLoggedIn = false;
     _global.currentUserName.then((val) {
       setState(() {
         if (val != null) {
@@ -50,7 +49,6 @@ class _LoginActionViewState extends State<LoginActionView>
 
   void _handleTabChange() {
     var index = _tabController.index;
-    print("Tab changed to index : $index");
     if (index == 0) {
       setState(() {
         _isRegisterFormVisible = false;
@@ -63,34 +61,84 @@ class _LoginActionViewState extends State<LoginActionView>
   }
 
   submitForm() async {
-    try {
-      if (_isRegisterFormVisible) {
-        await firebaseAuth
-            .createNewUser(nicknameController.text, emailController.text,
-                passwordController.text)
-            .then((value) {
-          setState(() {
-            Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
-                arguments: value);
-          });
-          print("value returned after login : $value");
-        });
-      } else {
-        await firebaseAuth
-            .signIn(emailController.text, passwordController.text)
-            .then((value) {
-          setState(() {
-            //window.console.dir(value);
-            if (value != null) {
+    validateForm();
+    if (_valid) {
+      try {
+        if (_isRegisterFormVisible) {
+          await firebaseAuth
+              .createNewUser(nicknameController.text, emailController.text,
+                  passwordController.text)
+              .then((value) {
+            setState(() {
               Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
                   arguments: value.displayName);
-            }
+            });
           });
+        } else {
+          await firebaseAuth
+              .signIn(emailController.text, passwordController.text)
+              .then((value) {
+            setState(() {
+              //window.console.dir(value);
+              if (value != null) {
+                Navigator.pushReplacementNamed(this.context, router.PRODUCTS,
+                    arguments: value.displayName);
+              }
+            });
+          });
+        }
+      } catch (e) {
+        print("Unable to login user due to enter $e");
+      }
+    }
+  }
+
+  validateForm() {
+    if (_isRegisterFormVisible) {
+      if (nicknameController.text == null ||
+          nicknameController.text == '' ||
+          emailController.text == null ||
+          emailController.text == '' ||
+          passwordController.text == null ||
+          passwordController.text == '') {
+        setState(() {
+          _valid = false;
+        });
+        showLoginValidationToast();
+      } else {
+        setState(() {
+          _valid = true;
         });
       }
-    } catch (e) {
-      print("Unable to login user due to enter $e");
+    } else {
+      if (emailController.text == null ||
+          emailController.text == '' ||
+          passwordController.text == null ||
+          passwordController.text == '') {
+        setState(() {
+          _valid = false;
+        });
+        showLoginValidationToast();
+      } else {
+        setState(() {
+          _valid = true;
+        });
+      }
     }
+  }
+
+  showLoginValidationToast() {
+    showToast(
+      'One or more mandatory fields are left empty. ' +
+          '\n' +
+          'Please try again.',
+      duration: Duration(seconds: 5),
+      position: ToastPosition.bottom,
+      backgroundColor: Colors.white,
+      radius: 5.0,
+      textStyle: TextStyle(
+          fontSize: 16.0, color: Colors.red, fontFamily: 'comic sans ms'),
+    );
   }
 
   void showRegisterForm() {
@@ -132,11 +180,12 @@ class _LoginActionViewState extends State<LoginActionView>
                     alignment: Alignment.center,
                     children: <Widget>[
                       InputWidget(
-                          10.0,
-                          0.0,
-                          false,
-                          'Pick a cool nickname for yourself ...',
-                          nicknameController),
+                        10.0,
+                        0.0,
+                        false,
+                        'Pick a cool nickname for yourself ...',
+                        nicknameController,
+                      ),
                     ],
                   )
                 ],
@@ -184,11 +233,12 @@ class _LoginActionViewState extends State<LoginActionView>
                   alignment: Alignment.center,
                   children: <Widget>[
                     InputWidget(
-                        1.0,
-                        0.0,
-                        true,
-                        'Enter your password to continue ...',
-                        passwordController),
+                      1.0,
+                      0.0,
+                      true,
+                      'Enter your password to continue ...',
+                      passwordController,
+                    ),
                   ],
                 )
               ],
@@ -276,13 +326,3 @@ Widget customRectButton(
     },
   );
 }
-
-const List<Color> signInGradients = [
-  Color(0xFF0EDED2),
-  Color(0xFF03A0FE),
-];
-
-const List<Color> signUpGradients = [
-  Color(0xFFFF9945),
-  Color(0xFFFc6076),
-];

@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firestore.dart';
 
