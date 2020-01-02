@@ -56,7 +56,9 @@ class Inventory {
       for (var eachItem in allItems) {
         if (eachItem.firstUser != null &&
             eachItem.firstUser != '' &&
-            eachItem.firstUser != currentUser) {
+            eachItem.firstUser != currentUser
+            )
+        {
           allTakenItems.add(eachItem);
         }
       }
