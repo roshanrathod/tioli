@@ -148,26 +148,16 @@ class _LoginActionViewState extends State<LoginActionView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Column(
-      children: <Widget>[
-        Padding(padding: EdgeInsets.all(30),),
-        SingleChildScrollView(
-            child: ConstrainedBox(
-          constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height/1.5,
-          ),
+      body: Center(
+        child: SingleChildScrollView(
           child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                 Container(
-                      alignment: Alignment.center,
-                      height: 90,
-                      child: TopNavigationBar()),
+                Container(child: TopNavigationBar()),
                 if (_isRegisterFormVisible)
                   Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                       alignment: Alignment.topLeft,
                       child: Text(
                         'Nickname',
@@ -193,7 +183,7 @@ class _LoginActionViewState extends State<LoginActionView>
                     height: 60,
                   ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                     alignment: Alignment.topLeft,
                     child: Text(
                       'Email',
@@ -213,7 +203,7 @@ class _LoginActionViewState extends State<LoginActionView>
                   height: 60,
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                     alignment: Alignment.topLeft,
                     child: Text(
                       'Password',
@@ -223,8 +213,7 @@ class _LoginActionViewState extends State<LoginActionView>
                       ),
                     )),
                 Container(
-                  child:
-                      InputWidget(
+                  child: InputWidget(
                     0.0,
                     0.0,
                     true,
@@ -233,38 +222,42 @@ class _LoginActionViewState extends State<LoginActionView>
                   ),
                   height: 60,
                 ),
-              ]),
-        )),
-        FloatingActionButton.extended(
-          onPressed: submitForm,
-          label: Text('Submit'),
-          backgroundColor: Colors.blue,
-        ),
-        Expanded(
-          child: new Align(
-            alignment: Alignment.bottomCenter,
-            child: TabBar(
-              indicatorColor: Colors.blue[300],
-              labelColor: const Color(0xFF3baee7),
-              unselectedLabelColor: Colors.lightBlue[100],
-              labelStyle: TextStyle(
-                  fontFamily: 'Open Sans',
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold),
-              tabs: [
-                Tab(
-                  text: "LOGIN",
+                FloatingActionButton.extended(
+                  onPressed: submitForm,
+                  label: Text('Submit'),
+                  backgroundColor: Colors.blue,
                 ),
-                Tab(
-                  text: "REGISTER",
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: new Align(
+                        alignment: Alignment.bottomCenter,
+                        child: TabBar(
+                          indicatorColor: Colors.blue[300],
+                          labelColor: const Color(0xFF3baee7),
+                          unselectedLabelColor: Colors.lightBlue[100],
+                          labelStyle: TextStyle(
+                              fontFamily: 'Open Sans',
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                          tabs: [
+                            Tab(
+                              text: "LOGIN",
+                            ),
+                            Tab(
+                              text: "REGISTER",
+                            )
+                          ],
+                          controller: _tabController,
+                        ),
+                      ),
+                    ),
+                  ],
                 )
-              ],
-              controller: _tabController,
-            ),
-          ),
-        )
-      ],
-    )));
+              ]),
+        ),
+      ),
+    );
   }
 
   Widget customRectButton(

@@ -15,10 +15,37 @@ class TopNavigationBar extends StatelessWidget {
         spacing: 8.0, // gap between adjacent chips
         runSpacing: 4.0, // gap between lines
         children: <Widget>[
-          SizedBox(
-              height: 50, width: 300, child: Image.asset('assets/logo.png')),
-          Text('\nTake It or Leave It\n',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Image.asset(
+                      'assets/logo.png',
+                      height: 100,
+                      width: 200,
+                    ),
+                    padding: EdgeInsets.all(20),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      'Take It or Leave It',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+                    ),
+                    padding: EdgeInsets.all(20),
+                  ),
+                ],
+              ),
+            ],
+          )
         ],
       ),
     );
